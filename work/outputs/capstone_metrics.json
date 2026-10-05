@@ -1,0 +1,46 @@
+{
+  "data_window": "March 2026; features from March 1-15",
+  "feature_frame_rows": 77540,
+  "grouped_holdout_train_rows": 61747,
+  "grouped_holdout_test_rows": 15793,
+  "grouped_holdout_train_clients": 28,
+  "grouped_holdout_test_clients": 10,
+  "shared_clients": 0,
+  "model_comparison": [
+    {
+      "method": "Hand-written baseline",
+      "Precision@20": 0.2,
+      "Precision@50": 0.14,
+      "test_base_rate": 0.1478
+    },
+    {
+      "method": "Logistic Regression",
+      "Precision@20": 0.15,
+      "Precision@50": 0.28,
+      "test_base_rate": 0.1478
+    },
+    {
+      "method": "Random Forest",
+      "Precision@20": 0.2,
+      "Precision@50": 0.26,
+      "test_base_rate": 0.1478
+    }
+  ],
+  "top20_action_distribution": {
+    "content_refresh_brief": 10,
+    "title_snippet_review": 9,
+    "human_refresh_review": 1
+  },
+  "final_feature_columns": [
+    "prior_15d_impressions",
+    "prior_15d_clicks",
+    "prior_15d_avg_position",
+    "prior_15d_ctr",
+    "prior_15d_active_days"
+  ],
+  "excluded_future_fields": [
+    "next_16d_impressions",
+    "is_next_15d_declining"
+  ],
+  "claim_boundary": "Decision support for human review; not a guarantee of decline or content-refresh recovery."
+}
