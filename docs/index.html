@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Content Opportunity Prioritization</title>
+  <style>
+    :root {
+      --ink: #152238;
+      --muted: #5c687a;
+      --paper: #ffffff;
+      --ground: #f3f6fa;
+      --line: #d9e0ea;
+      --blue: #245b8f;
+      --rose: #b85d78;
+      --green: #307262;
+      --gold: #be7b1b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--ground);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.65;
+    }
+    .hero {
+      background: var(--ink);
+      color: white;
+      padding: 72px 24px 58px;
+    }
+    .wrap { max-width: 1020px; margin: 0 auto; }
+    .tag {
+      display: inline-block;
+      color: #b9d5f0;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    h1 { font-size: clamp(2.2rem, 5vw, 4.3rem); line-height: 1.05; margin: 12px 0 18px; }
+    .subtitle { color: #d7e0ec; max-width: 760px; font-size: 1.12rem; }
+    .meta { color: #b9c6d6; font-size: 0.94rem; margin-top: 22px; }
+    nav {
+      background: white;
+      border-bottom: 1px solid var(--line);
+      padding: 15px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    nav .wrap { display: flex; gap: 18px; flex-wrap: wrap; }
+    nav a { color: var(--blue); text-decoration: none; font-size: 0.9rem; font-weight: 700; }
+    main { background: var(--paper); max-width: 1020px; margin: 28px auto; padding: 48px 7%; }
+    section { padding: 28px 0; border-bottom: 1px solid var(--line); }
+    section:last-child { border-bottom: 0; }
+    h2 { font-size: 1.65rem; margin: 0 0 12px; }
+    h3 { font-size: 1.12rem; margin-top: 24px; }
+    p, li { color: #344154; }
+    .abstract { border-left: 5px solid var(--blue); padding-left: 22px; font-size: 1.05rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(195px, 1fr)); gap: 14px; margin: 22px 0; }
+    .card { background: #f6f8fb; border: 1px solid var(--line); padding: 18px; }
+    .card strong { display: block; font-size: 1.5rem; color: var(--blue); }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95rem; }
+    th { background: var(--ink); color: white; text-align: left; }
+    th, td { padding: 11px; border: 1px solid var(--line); }
+    tr:nth-child(even) { background: #f7f9fc; }
+    .chart { margin: 24px 0; padding: 22px; background: #f7f9fc; border: 1px solid var(--line); }
+    .bar-row { display: grid; grid-template-columns: 185px 1fr 48px; gap: 10px; align-items: center; margin: 12px 0; font-size: 0.9rem; }
+    .track { height: 18px; background: #dde5ee; border-radius: 4px; overflow: hidden; }
+    .bar { height: 100%; border-radius: 4px; }
+    .blue { background: var(--blue); }
+    .rose { background: var(--rose); }
+    .green { background: var(--green); }
+    .callout { background: #fff7e9; border-left: 5px solid var(--gold); padding: 18px 20px; }
+    code { background: #edf2f7; padding: 2px 5px; border-radius: 3px; }
+    a { color: var(--blue); }
+    footer { padding: 35px 0 10px; color: var(--muted); font-size: 0.92rem; }
+    @media (max-width: 600px) {
+      main { margin: 0; padding: 32px 22px; }
+      .hero { padding: 50px 22px 42px; }
+      .bar-row { grid-template-columns: 105px 1fr 42px; font-size: 0.78rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <span class="tag">Machine Learning Capstone</span>
+      <h1>Content Opportunity Prioritization</h1>
+      <p class="subtitle">
+        A public-safe decision-support system for ranking content pages for human review.
+      </p>
+      <p class="meta">Ezgi Ozturk · Refresh and Content Opportunity Scoring · October 2026</p>
+    </div>
+  </header>
+
+  <nav>
+    <div class="wrap">
+      <a href="#abstract">Abstract</a>
+      <a href="#data">Data</a>
+      <a href="#method">Method</a>
+      <a href="#results">Results</a>
+      <a href="#recommendations">Recommendations</a>
+      <a href="#reproducibility">Reproducibility</a>
+    </div>
+  </nav>
+
+  <main>
+    <section id="abstract">
+      <h2>0. Abstract</h2>
+      <p class="abstract">
+        This project asks which content pages should be prioritised for human review when editorial capacity is limited.
+        The analysis uses a March 2026 warehouse slice containing 77,540 pseudonymized content pages and search-performance
+        signals measured during the first 15 days of the month. A transparent rule-based baseline, Logistic Regression,
+        and Random Forest were compared on the same grouped client holdout using a later-window decline proxy.
+        Logistic Regression achieved the strongest observed Precision@50 at 0.28, compared with 0.14 for the baseline,
+        while the baseline and Random Forest were stronger at Precision@20 with 0.20. The output is a public-safe
+        decision-support queue for human review; it does not guarantee that a page will decline or recover after an edit.
+      </p>
+    </section>
+
+    <section id="problem">
+      <h2>1. Problem framing</h2>
+      <p>
+        The system supports a content-review prioritisation decision: which pages should a content editor or SEO analyst
+        inspect first? One row represents one pseudonymized content page. The output is a ranked score, action label,
+        and reason code that supports a human decision to refresh, review a title or snippet, investigate, defer, or take no action.
+      </p>
+      <div class="grid">
+        <div class="card"><strong>One page</strong>Unit of analysis</div>
+        <div class="card"><strong>Ranked queue</strong>Decision-support output</div>
+        <div class="card"><strong>Human review</strong>Final action remains manual</div>
+      </div>
+      <p>
+        A false positive can waste editorial time. A false negative can leave an important page outside the review queue.
+        Data and machine learning help apply consistent criteria across a large inventory, but do not replace editorial judgement.
+      </p>
+    </section>
+
+    <section id="data">
+      <h2>2. Data safety</h2>
+      <p>
+        The analysis uses the FlyRank ML Internship warehouse release and the
+        <code>fact_content_daily_performance</code> table for March 2026.
+        The feature window is 1–15 March; the later outcome window is 16–31 March.
+      </p>
+      <div class="grid">
+        <div class="card"><strong>77,540</strong>Eligible page-level rows</div>
+        <div class="card"><strong>5</strong>Pre-decision model features</div>
+        <div class="card"><strong>0</strong>Client names, URLs, or raw queries published</div>
+      </div>
+      <p>
+        The final features are prior impressions, clicks, average position, CTR, and active days.
+        Client and content IDs are used only for grouping and validation. Future-window impressions,
+        the decline label, future-derived ratios, existing flags, and prior scores are excluded.
+      </p>
+    </section>
+
+    <section id="method">
+      <h2>3. Baseline and methodology</h2>
+      <p>
+        The target is a historical later-window decline proxy: pages need at least 100 impressions in the first 15 days
+        and at least 20 percent fewer impressions in the later March window. The transparent baseline uses only
+        prior impressions, average position, and CTR, with additional review priority for visible pages in positions 21–50.
+      </p>
+      <p>
+        Logistic Regression is the main readable model. Random Forest is a non-linear comparison.
+        Evaluation uses <code>GroupShuffleSplit</code> by pseudonymized client with <code>random_state=42</code>.
+        The page-level frame is sorted by client and content ID before splitting so the evaluation is reproducible.
+      </p>
+    </section>
+
+    <section id="results">
+      <h2>4. Results</h2>
+      <p>
+        The grouped holdout contains 61,747 training rows from 28 clients and 15,793 test rows from 10 unseen clients.
+        No client appears in both groups. The test-set decline-proxy base rate is 0.148.
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>Method</th><th>Precision@20</th><th>Precision@50</th><th>Base rate</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Hand-written baseline</td><td>0.20</td><td>0.14</td><td>0.148</td></tr>
+          <tr><td>Logistic Regression</td><td>0.15</td><td><strong>0.28</strong></td><td>0.148</td></tr>
+          <tr><td>Random Forest</td><td><strong>0.20</strong></td><td>0.26</td><td>0.148</td></tr>
+        </tbody>
+      </table>
+
+      <div class="chart" aria-label="Grouped holdout precision comparison">
+        <h3>Grouped-holdout precision</h3>
+        <div class="bar-row"><span>Baseline P@20</span><div class="track"><div class="bar blue" style="width:20%"></div></div><b>0.20</b></div>
+        <div class="bar-row"><span>Baseline P@50</span><div class="track"><div class="bar rose" style="width:14%"></div></div><b>0.14</b></div>
+        <div class="bar-row"><span>Logistic P@20</span><div class="track"><div class="bar blue" style="width:15%"></div></div><b>0.15</b></div>
+        <div class="bar-row"><span>Logistic P@50</span><div class="track"><div class="bar rose" style="width:28%"></div></div><b>0.28</b></div>
+        <div class="bar-row"><span>Forest P@20</span><div class="track"><div class="bar blue" style="width:20%"></div></div><b>0.20</b></div>
+        <div class="bar-row"><span>Forest P@50</span><div class="track"><div class="bar green" style="width:26%"></div></div><b>0.26</b></div>
+      </div>
+
+      <p>
+        The result is mixed. The baseline and Random Forest are strongest for a short top-20 queue.
+        Logistic Regression is strongest for a 50-page review queue and remains easier to interpret.
+      </p>
+    </section>
+
+    <section id="limitations">
+      <h2>5. Limitations</h2>
+      <p>
+        This work measures associations within one historical March 2026 slice. It does not prove that content changes
+        cause performance recovery. The proxy is based on later impressions, not conversion value, revenue, page quality,
+        or user satisfaction.
+      </p>
+      <p>
+        The models cannot observe page text, search intent, SERP features, competitors, technical conditions, seasonal demand,
+        or business priorities. The grouped client holdout is more honest than a random page-level split, but it remains
+        one historical evaluation.
+      </p>
+      <div class="callout">
+        The queue is decision support only. It must not automatically publish, rewrite, delete, merge, canonicalise,
+        or change internal links.
+      </div>
+    </section>
+
+    <section id="recommendations">
+      <h2>6. Ranked recommendations</h2>
+      <p>
+        The historical top-20 queue contains 10 <code>content_refresh_brief</code> recommendations,
+        9 <code>title_snippet_review</code> recommendations, and 1 <code>human_refresh_review</code> recommendation.
+      </p>
+
+      <div class="chart" aria-label="Top 20 recommended action distribution">
+        <h3>Top-20 recommended actions</h3>
+        <div class="bar-row"><span>Refresh brief</span><div class="track"><div class="bar blue" style="width:100%"></div></div><b>10</b></div>
+        <div class="bar-row"><span>Title/snippet review</span><div class="track"><div class="bar green" style="width:90%"></div></div><b>9</b></div>
+        <div class="bar-row"><span>Human refresh review</span><div class="track"><div class="bar rose" style="width:10%"></div></div><b>1</b></div>
+      </div>
+
+      <p>
+        A refresh brief prompts review of freshness, topic coverage, structure, internal links, and intent.
+        A title/snippet review examines title, metadata, and search-result presentation before a full rewrite is considered.
+        Every recommendation requires a reviewer to inspect search intent, SERP context, quality, effort, business value,
+        seasonality, and technical conditions.
+      </p>
+    </section>
+
+    <section id="reproducibility">
+      <h2>7. Reproducibility</h2>
+      <p>
+        The notebook workflow is available in the public
+        <a href="https://github.com/Ezgicode/FlyRAnk-AI">project repository</a>.
+        The core analysis is reproduced by running the numbered notebooks followed by
+        <a href="https://github.com/Ezgicode/FlyRAnk-AI/blob/main/work/notebooks/capstone.ipynb">capstone.ipynb</a>.
+      </p>
+      <p>
+        The analysis uses Python with DuckDB, pandas, NumPy, scikit-learn, Matplotlib, and an approved Hugging Face read token
+        stored outside the repository. The capstone notebook creates a public-safe metrics receipt and reusable figures;
+        row-level queues are regenerated and not committed publicly.
+      </p>
+      <p>
+        Read the complete methodology and reproducibility record in
+        <a href="https://github.com/Ezgicode/FlyRAnk-AI/blob/main/work/capstone_report.md">capstone_report.md</a>.
+      </p>
+    </section>
+
+    <section id="credit">
+      <h2>8. Acknowledgments and data credit</h2>
+      <p>
+        Built on the <a href="https://flyrank.ai">FlyRank ML Internship dataset</a>.
+      </p>
+      <p>
+        This educational project uses anonymized and pseudonymized data and does not publish client-identifying information.
+      </p>
+    </section>
+
+    <footer>
+      <p>Prepared as a machine-learning capstone research artifact. Claims are observed, measured, directional, and intended for decision support.</p>
+    </footer>
+  </main>
+</body>
+</html>
